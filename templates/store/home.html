@@ -1,0 +1,111 @@
+{% extends 'store/base.html' %}
+{% block title %}ShopAWS — Home{% endblock %}
+
+{% block content %}
+<!-- HERO -->
+<div style="position:relative;background:linear-gradient(135deg,#08080f 60%,#0f0f1a);border-bottom:1px solid var(--border);padding:6rem 2rem 5rem;text-align:center;overflow:hidden;">
+  <div style="position:absolute;top:-100px;left:50%;transform:translateX(-50%);width:600px;height:400px;background:radial-gradient(circle,rgba(255,153,0,0.07) 0%,transparent 70%);pointer-events:none;"></div>
+  <p style="font-family:'Space Mono',monospace;font-size:0.7rem;color:var(--orange);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:1.2rem;">// AWS Internship Project — Django + PostgreSQL</p>
+  <h1 style="font-size:clamp(2.5rem,6vw,5rem);font-weight:800;letter-spacing:-0.04em;line-height:1;margin-bottom:1.5rem;">
+    The shopping<br/><span style="color:var(--orange);">E-Commerce Store</span>
+  </h1>
+  <p style="color:var(--sub);font-size:1rem;max-width:520px;margin:0 auto 2.5rem;line-height:1.7;">
+    
+  <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+    <a href="{% url 'product_list' %}" class="btn btn-primary" style="font-size:0.95rem;padding:0.8rem 2rem;">Browse Products →</a>
+    <a href="{% url 'register' %}" class="btn btn-outline" style="font-size:0.95rem;padding:0.8rem 2rem;">Get Started</a>
+  </div>
+</div>
+
+<!-- TECH STACK BAR -->
+<span style="font-family:'Space Mono',monospace;font-size:0.68rem;color:var(--muted);letter-spacing:0.1em;">Django 4.2</span>
+  <span style="font-family:'Space Mono',monospace;font-size:0.68rem;color:var(--muted);letter-spacing:0.1em;">PostgreSQL</span>
+  <span style="font-family:'Space Mono',monospace;font-size:0.68rem;color:var(--muted);letter-spacing:0.1em;">AWS EC2</span>
+  <span style="font-family:'Space Mono',monospace;font-size:0.68rem;color:var(--muted);letter-spacing:0.1em;">Python 3.11</span>
+
+<!-- FEATURED PRODUCTS -->
+<div class="container">
+  <div class="page-header">
+    <div>
+      <p class="page-tag">// Featured</p>
+      <h2 style="font-size:1.8rem;font-weight:800;letter-spacing:-0.03em;">Latest Products</h2>
+    </div>
+    <a href="{% url 'product_list' %}" class="btn btn-outline">View All →</a>
+  </div>
+
+  {% if products %}
+  <div class="product-grid">
+    {% for product in products %}
+    <div class="product-card">
+      {% if product.image %}
+        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-img"/>
+      {% else %}
+        <div class="product-img-placeholder">📦</div>
+      {% endif %}
+      <div class="product-body">
+        {% if product.category %}
+          <p class="product-cat">{{ product.category.name }}</p>
+        {% endif %}
+        <p class="product-name"><a href="{% url 'product_detail' product.slug %}">{{ product.name }}</a></p>
+        <p class="product-price">${{ product.price }}</p>
+        <p class="product-stock">{{ product.stock }} in stock</p>
+        <div class="product-actions">
+          <a href="{% url 'cart_add' product.slug %}" class="btn btn-primary btn-sm">Add to Cart</a>
+          <a href="{% url 'product_detail' product.slug %}" class="btn btn-outline btn-sm">Details</a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+    <div class="empty-state">
+      <span class="empty-icon">🏪</span>
+      <h3>No products yet</h3>
+      <p>Admin can add products from the dashboard.</p>
+      {% if user.is_staff %}
+        <a href="{% url 'product_create' %}" class="btn btn-primary mt-3">Add First Product</a>
+      {% endif %}
+    </div>
+  {% endif %}
+
+  <!-- CATEGORIES -->
+  {% if categories %}
+  <hr class="divider"/>
+  <div>
+    <p class="page-tag">// Shop By Category</p>
+    <div style="display:flex;flex-wrap:wrap;gap:0.75rem;margin-top:1rem;">
+      {% for cat in categories %}
+      <a href="{% url 'product_list' %}?category={{ cat.slug }}" class="btn btn-outline">{{ cat.name }}</a>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- FEATURES -->
+  <hr class="divider"/>
+  <p class="page-tag">// Project Features</p>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);margin-top:1rem;">
+    <div style="background:var(--card);padding:1.5rem;font-size:0.85rem;color:var(--sub);">
+  <span style="color:var(--green);font-family:'Space Mono',monospace;margin-right:0.4rem;">✓</span>Full CRUD (Products & Categories)
+</div>
+<div style="background:var(--card);padding:1.5rem;font-size:0.85rem;color:var(--sub);">
+  <span style="color:var(--green);font-family:'Space Mono',monospace;margin-right:0.4rem;">✓</span>Session-Based Cart
+</div>
+<div style="background:var(--card);padding:1.5rem;font-size:0.85rem;color:var(--sub);">
+  <span style="color:var(--green);font-family:'Space Mono',monospace;margin-right:0.4rem;">✓</span>User Auth & Registration
+</div>
+<div style="background:var(--card);padding:1.5rem;font-size:0.85rem;color:var(--sub);">
+  <span style="color:var(--green);font-family:'Space Mono',monospace;margin-right:0.4rem;">✓</span>Order Placement & Tracking
+</div>
+<div style="background:var(--card);padding:1.5rem;font-size:0.85rem;color:var(--sub);">
+  <span style="color:var(--green);font-family:'Space Mono',monospace;margin-right:0.4rem;">✓</span>Admin Dashboard
+</div>
+<div style="background:var(--card);padding:1.5rem;font-size:0.85rem;color:var(--sub);">
+  <span style="color:var(--green);font-family:'Space Mono',monospace;margin-right:0.4rem;">✓</span>PostgreSQL Database
+</div>
+<div style="background:var(--card);padding:1.5rem;font-size:0.85rem;color:var(--sub);">
+  <span style="color:var(--green);font-family:'Space Mono',monospace;margin-right:0.4rem;">✓</span>AWS EC2 Deployment
+</div>
+  </div>
+</div>
+{% endblock %}

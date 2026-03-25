@@ -1,0 +1,64 @@
+{% extends 'store/base.html' %}
+{% block title %}{{ product.name }} — ShopAWS{% endblock %}
+
+{% block content %}
+<div class="container">
+  <p style="font-family:'Space Mono',monospace;font-size:0.7rem;color:var(--sub);margin-bottom:2rem;">
+    <a href="{% url 'home' %}" style="color:var(--sub);text-decoration:none;">Home</a> /
+    <a href="{% url 'product_list' %}" style="color:var(--sub);text-decoration:none;">Products</a> /
+    <span style="color:var(--orange);">{{ product.name }}</span>
+  </p>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start;">
+    <!-- IMAGE -->
+    <div class="card" style="overflow:hidden;">
+      {% if product.image %}
+        <img src="{{ product.image.url }}" alt="{{ product.name }}" style="width:100%;display:block;"/>
+      {% else %}
+        <div style="aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:6rem;background:linear-gradient(135deg,#0f0f1a,#1a1a2e);">📦</div>
+      {% endif %}
+    </div>
+
+    <!-- DETAILS -->
+    <div>
+      {% if product.category %}
+        <p style="font-family:'Space Mono',monospace;font-size:0.65rem;color:var(--orange);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:0.6rem;">{{ product.category.name }}</p>
+      {% endif %}
+      <h1 style="font-size:2rem;font-weight:800;letter-spacing:-0.03em;margin-bottom:1rem;">{{ product.name }}</h1>
+      <p style="font-family:'Space Mono',monospace;font-size:2rem;color:var(--orange);font-weight:700;margin-bottom:1.5rem;">${{ product.price }}</p>
+
+      <p style="color:var(--sub);line-height:1.8;font-size:0.95rem;margin-bottom:2rem;">{{ product.description }}</p>
+
+      <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:2rem;">
+        <div style="background:var(--card);border:1px solid var(--border);padding:0.6rem 1rem;border-radius:3px;">
+          <p style="font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--sub);letter-spacing:0.1em;text-transform:uppercase;">Stock</p>
+          <p style="font-weight:700;color:{% if product.in_stock %}var(--green){% else %}var(--red){% endif %};">
+            {% if product.in_stock %}{{ product.stock }} Available{% else %}Out of Stock{% endif %}
+          </p>
+        </div>
+        <div style="background:var(--card);border:1px solid var(--border);padding:0.6rem 1rem;border-radius:3px;">
+          <p style="font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--sub);letter-spacing:0.1em;text-transform:uppercase;">SKU</p>
+          <p style="font-weight:700;font-family:'Space Mono',monospace;font-size:0.85rem;">{{ product.slug|upper }}</p>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
+        {% if product.in_stock %}
+          <a href="{% url 'cart_add' product.slug %}" class="btn btn-primary" style="font-size:0.95rem;padding:0.8rem 2rem;">🛒 Add to Cart</a>
+        {% else %}
+          <span class="btn btn-outline" style="opacity:0.4;cursor:not-allowed;padding:0.8rem 2rem;">Out of Stock</span>
+        {% endif %}
+        <a href="{% url 'product_list' %}" class="btn btn-outline" style="padding:0.8rem 1.5rem;">← Back</a>
+      </div>
+
+      {% if user.is_staff %}
+      <hr class="divider"/>
+      <div class="flex gap-1">
+        <a href="{% url 'product_edit' product.slug %}" class="btn btn-outline btn-sm">✏️ Edit Product</a>
+        <a href="{% url 'product_delete' product.slug %}" class="btn btn-danger btn-sm">🗑 Delete</a>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

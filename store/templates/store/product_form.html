@@ -1,0 +1,42 @@
+{% extends 'store/base.html' %}
+{% block title %}{{ title }} — ShopAWS{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="page-header">
+    <div>
+      <p class="page-tag">// Admin</p>
+      <h1>{{ title }}</h1>
+    </div>
+    <a href="{% url 'product_list' %}" class="btn btn-outline">← Back to Products</a>
+  </div>
+
+  <div class="form-card" style="max-width:700px;">
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      {% for field in form %}
+      <div class="form-group">
+        <label class="form-label">{{ field.label }}</label>
+        {{ field }}
+        {% if field.errors %}
+          {% for err in field.errors %}
+            <p class="form-errors">{{ err }}</p>
+          {% endfor %}
+        {% endif %}
+        {% if field.help_text %}
+          <p style="font-size:0.72rem;color:var(--sub);margin-top:0.3rem;">{{ field.help_text }}</p>
+        {% endif %}
+      </div>
+      {% endfor %}
+
+      <div class="flex gap-1 mt-3">
+        <button type="submit" class="btn btn-primary">
+          {% if product %}💾 Save Changes{% else %}✅ Create Product{% endif %}
+        </button>
+        <a href="{% url 'product_list' %}" class="btn btn-outline">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

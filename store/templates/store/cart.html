@@ -1,0 +1,102 @@
+{% extends 'store/base.html' %}
+{% block title %}Cart — ShopAWS{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="page-header">
+    <div>
+      <p class="page-tag">// Shopping</p>
+      <h1>Your Cart</h1>
+    </div>
+    {% if cart_items %}
+      <a href="{% url 'cart_clear' %}" class="btn btn-danger btn-sm">Clear Cart</a>
+    {% endif %}
+  </div>
+
+  {% if cart_items %}
+  <div style="display:grid;grid-template-columns:1fr 340px;gap:2rem;align-items:start;">
+    <!-- ITEMS -->
+    <div class="card">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Price</th>
+              <th>Quantity</th>
+              <th>Subtotal</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in cart_items %}
+            <tr>
+              <td>
+                <div class="flex gap-1">
+                  {% if item.image %}
+                    <img src="{{ item.image }}" style="width:48px;height:48px;object-fit:cover;border-radius:3px;border:1px solid var(--border);"/>
+                  {% else %}
+                    <div style="width:48px;height:48px;background:var(--border);border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;">📦</div>
+                  {% endif %}
+                  <span style="font-weight:600;">{{ item.name }}</span>
+                </div>
+              </td>
+              <td style="font-family:'Space Mono',monospace;color:var(--orange);">${{ item.price }}</td>
+              <td>
+                <form method="post" action="{% url 'cart_update' item.slug %}" style="display:flex;gap:0.4rem;align-items:center;">
+                  {% csrf_token %}
+                  <input type="number" name="quantity" value="{{ item.quantity }}" min="0" max="999"
+                    style="width:60px;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:0.3rem 0.5rem;border-radius:3px;font-family:'Space Mono',monospace;text-align:center;"/>
+                  <button type="submit" class="btn btn-outline btn-sm">↻</button>
+                </form>
+              </td>
+              <td style="font-family:'Space Mono',monospace;font-weight:700;">${{ item.subtotal }}</td>
+              <td>
+                <a href="{% url 'cart_remove' item.slug %}" class="btn btn-danger btn-sm">✕</a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SUMMARY -->
+    <div class="card" style="padding:1.75rem;">
+      <p style="font-family:'Space Mono',monospace;font-size:0.65rem;color:var(--sub);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:1.2rem;">Order Summary</p>
+
+      <div style="display:flex;justify-content:space-between;margin-bottom:0.75rem;font-size:0.88rem;color:var(--sub);">
+        <span>Subtotal</span><span>${{ total }}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:0.75rem;font-size:0.88rem;color:var(--sub);">
+        <span>Shipping</span><span style="color:var(--green);">Free</span>
+      </div>
+      <hr class="divider" style="margin:1rem 0;"/>
+      <div style="display:flex;justify-content:space-between;margin-bottom:1.5rem;">
+        <span style="font-weight:700;">Total</span>
+        <span style="font-family:'Space Mono',monospace;font-size:1.2rem;color:var(--orange);font-weight:700;">${{ total }}</span>
+      </div>
+
+      {% if user.is_authenticated %}
+        <a href="{% url 'checkout' %}" class="btn btn-primary btn-full">Proceed to Checkout →</a>
+      {% else %}
+        <a href="{% url 'login' %}" class="btn btn-primary btn-full">Login to Checkout</a>
+        <p style="text-align:center;margin-top:0.75rem;font-size:0.78rem;color:var(--sub);">
+          No account? <a href="{% url 'register' %}" style="color:var(--orange);">Register</a>
+        </p>
+      {% endif %}
+
+      <a href="{% url 'product_list' %}" class="btn btn-outline btn-full mt-2">← Continue Shopping</a>
+    </div>
+  </div>
+
+  {% else %}
+  <div class="empty-state">
+    <span class="empty-icon">🛒</span>
+    <h3>Your cart is empty</h3>
+    <p>Add some products to get started.</p>
+    <a href="{% url 'product_list' %}" class="btn btn-primary mt-3">Browse Products</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

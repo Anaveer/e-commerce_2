@@ -1,0 +1,51 @@
+{% extends 'store/base.html' %}
+{% block title %}My Orders — ShopAWS{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="page-header">
+    <div>
+      <p class="page-tag">// Account</p>
+      <h1>My Orders</h1>
+    </div>
+  </div>
+
+  {% if orders %}
+  <div class="card">
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Order #</th>
+            <th>Date</th>
+            <th>Items</th>
+            <th>Total</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for order in orders %}
+          <tr>
+            <td style="font-family:'Space Mono',monospace;color:var(--orange);">#{{ order.id }}</td>
+            <td style="font-size:0.82rem;color:var(--sub);">{{ order.created_at|date:"M d, Y" }}</td>
+            <td style="font-size:0.85rem;">{{ order.items.count }} item(s)</td>
+            <td style="font-family:'Space Mono',monospace;font-weight:700;">${{ order.total_price }}</td>
+            <td><span class="status status-{{ order.status }}">{{ order.get_status_display }}</span></td>
+            <td><a href="{% url 'order_detail' order.id %}" class="btn btn-outline btn-sm">View</a></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <span class="empty-icon">📋</span>
+    <h3>No orders yet</h3>
+    <p>Start shopping to see your orders here.</p>
+    <a href="{% url 'product_list' %}" class="btn btn-primary mt-3">Browse Products</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

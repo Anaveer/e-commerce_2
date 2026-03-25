@@ -1,0 +1,46 @@
+{% extends 'store/base.html' %}
+{% block title %}{{ title }} — ShopAWS{% endblock %}
+
+{% block content %}
+<div class="container" style="display:flex;justify-content:center;padding-top:3rem;padding-bottom:3rem;">
+  <div style="width:100%;max-width:420px;">
+    <div style="text-align:center;margin-bottom:2rem;">
+      <p style="font-family:'Space Mono',monospace;font-size:0.65rem;color:var(--orange);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:0.6rem;">// ShopAWS</p>
+      <h1 style="font-size:2rem;font-weight:800;letter-spacing:-0.03em;">{{ title }}</h1>
+    </div>
+
+    <div class="form-card" style="max-width:100%;">
+      <form method="post">
+        {% csrf_token %}
+        {% for field in form %}
+        <div class="form-group">
+          <label class="form-label">{{ field.label }}</label>
+          {{ field }}
+          {% if field.errors %}
+            {% for err in field.errors %}
+              <p class="form-errors">{{ err }}</p>
+            {% endfor %}
+          {% endif %}
+        </div>
+        {% endfor %}
+
+        {% if form.non_field_errors %}
+          <p class="form-errors" style="margin-bottom:1rem;">{{ form.non_field_errors.0 }}</p>
+        {% endif %}
+
+        <button type="submit" class="btn btn-primary btn-full" style="margin-top:0.5rem;padding:0.8rem;">
+          {% if action == 'login' %}Login →{% else %}Create Account →{% endif %}
+        </button>
+      </form>
+    </div>
+
+    <p style="text-align:center;margin-top:1.5rem;font-size:0.85rem;color:var(--sub);">
+      {% if action == 'login' %}
+        Don't have an account? <a href="{% url 'register' %}" style="color:var(--orange);">Register</a>
+      {% else %}
+        Already have an account? <a href="{% url 'login' %}" style="color:var(--orange);">Login</a>
+      {% endif %}
+    </p>
+  </div>
+</div>
+{% endblock %}

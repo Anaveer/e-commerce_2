@@ -1,0 +1,20 @@
+{% extends 'store/base.html' %}
+{% block title %}Delete Product — ShopAWS{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="form-card">
+    <p style="font-family:'Space Mono',monospace;font-size:0.65rem;color:var(--red);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:0.8rem;">// Danger Zone</p>
+    <h1 style="font-size:1.6rem;font-weight:800;margin-bottom:1rem;">Delete Product</h1>
+    <p style="color:var(--sub);margin-bottom:1.5rem;line-height:1.7;">
+      Are you sure you want to delete <strong style="color:var(--text);">{{ product.name }}</strong>?
+      This action cannot be undone.
+    </p>
+    <form method="post" style="display:flex;gap:0.75rem;">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-danger">Yes, Delete</button>
+      <a href="{% url 'product_list' %}" class="btn btn-outline">Cancel</a>
+    </form>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends 'store/base.html' %}
+{% block title %}Categories — ShopAWS{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="page-header">
+    <div>
+      <p class="page-tag">// Admin</p>
+      <h1>Categories</h1>
+    </div>
+    <a href="{% url 'category_create' %}" class="btn btn-primary">+ Add Category</a>
+  </div>
+
+  {% if categories %}
+  <div class="card">
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Slug</th>
+            <th>Description</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for cat in categories %}
+          <tr>
+            <td style="font-weight:600;">{{ cat.name }}</td>
+            <td style="font-family:'Space Mono',monospace;font-size:0.75rem;color:var(--sub);">{{ cat.slug }}</td>
+            <td style="color:var(--sub);font-size:0.85rem;">{{ cat.description|truncatechars:60 }}</td>
+            <td>
+              <div class="flex gap-1">
+                <a href="{% url 'category_edit' cat.slug %}" class="btn btn-outline btn-sm">Edit</a>
+                <a href="{% url 'category_delete' cat.slug %}" class="btn btn-danger btn-sm">Delete</a>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <span class="empty-icon">📂</span>
+    <h3>No categories yet</h3>
+    <a href="{% url 'category_create' %}" class="btn btn-primary mt-3">Add First Category</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
